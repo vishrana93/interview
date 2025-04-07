@@ -66,30 +66,33 @@ following key features:
    lead to poor outcome if requests are highly dynamic
 3. Zones are initially hard-coded but can be expanded based on waiting passenger pickup floors. The trade-off provides
    some flexibility without the complexity of a fully dynamic zoning algorith
+   
    3.1 System allows some flexibility in assigning elevators across zones—for example, an elevator primarily assigned to
    zone2 might serve a passenger from zone1 when necessary. This “greedy” approach is a deliberate trade-off. In
    real-world scenarios, the number of requests from a zone might spike, so an elevator servicing multiple zones might
    not be preferable to strictly enforcing zones when capacity is tight. Thus, if there’s a high probability of more
    requests coming from zone1 than from zone2, then having the flexibility to service both can be beneficial but not
    ideal for some scenarios as passenger on zone2 might have wait longer as the assigned elevator to zone will be busy
+
    3.2 The current algorithm tends to penalize passengers whose journeys begin and end in the same zone. For instance,
    if a passenger is picked up in zone1 and also drops off in zone1, they don’t receive priority over passengers who
    need to travel between different zones. This trade-off was made because, in many practical situations, most people
    are traveling between zones where fewer stops mean faster travel times. If I prioritized same-zone trips equally,
    the elevator might stop too frequently, which could slow down overall transit times for a majority of users moving
    between zones
+
    3.3 The elevator’s state behavior is somewhat rigid. Once an elevator enters “pickup mode,” it accepts requests for
    passengers traveling within the same zone. However, once it starts boarding (switching to “dropping_off”), it won’t
    pick up additional passengers even if there is spare capacity. I made this choice deliberately to avoid the scenario
    where an elevator continuously picks up and drops off passengers, which could extend its route excessively and delay
    overall service. In a real-world implementation, you might want more dynamic behavior, but this approach strikes a
    balance for this simulation
-4. Reporting relies on parsing logs, which is less robust than using a dedicated database or logging system. In
+5. Reporting relies on parsing logs, which is less robust than using a dedicated database or logging system. In
    practice, if developers change logging formats or methods, reporting might break. I chose this approach because I
    don’t have a database for this project, and writing directly to a CSV file during operation could cause performance
    issues or system failures if, for example, file I/O suddenly fails. In real world scenario, it’s preferable to have
    broken reporting (or logs) rather than interrupt core elevator operations
-5. The simulation currently focuses solely on the core algorithm and does not handle external factors 
+6. The simulation currently focuses solely on the core algorithm and does not handle external factors 
    (such as system-level errors). This simplification was made to concentrate on demonstrating the elevator scheduling
    logic. In a production environment, additional error handling and resilience mechanisms would be necessary
 
